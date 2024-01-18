@@ -1,5 +1,5 @@
-let rawData; // Declare rawData as a global variable
-
+let rawData; // Declare rawData as a global variable makes it 
+let selectedValue = "940";
 // Get the Roadster endpoint
 const ewwwRl = 'https://2u-data-curriculum-team.s3.amazonaws.com/dataviz-classroom/v1.1/14-Interactive-Web-Visualizations/02-Homework/samples.json';
 
@@ -7,12 +7,7 @@ d3.json(ewwwRl)
   .then(data => {
     rawData = data; // Assign the fetched data to the global rawData variable
     //console.log(rawData);
-    let metaData = rawData.metadata;
-    console.log(metaData);
-    let names = rawData.names;
-    console.log(names);
-    let samples = rawData.samples;
-    console.log(samples);
+    const names = rawData.names;
 
     // Use a loop to create and append options to the select element
     const selectElement = d3.select("#selDataset");
@@ -22,14 +17,15 @@ d3.json(ewwwRl)
         .attr("value", value)
         .text(value);
     });
-
+    createBarChart(rawData.samples, selectedValue);
+    createBubbleChart(rawData.samples, selectedValue);
+    createDemoTable(rawData.metadata, selectedValue);
     // You can perform further logic or operations with these variables here
   });
 
-  //the function
 function createBarChart(samples, selectedValue) {
   // Find the sample with the matching id
-  const sampleId = samples.find(sample => sample.id === selectedValue);
+  let sampleId = samples.find(sample => sample.id === selectedValue);
     
   // Retrieve otu_ids and sample_values from the found sample
   const otuIdTop10 = sampleId.otu_ids.slice(0, 10).reverse();;
@@ -87,56 +83,39 @@ function createBubbleChart(samples, selectedValue) {
   Plotly.newPlot("bubble", data, layout);
 }
 
-function createDemoTable(metaData, selectedValue) {
-  // Create an array of objects for the table data
-  const tableData = metaData.map(data => ({
-    iD: tableData.id,
-    ethnicity: tableData.ethnicity,
-    gender: tableData.gender,
-    age: tableData.age,
-    location: tableData.location,
-    bBype: tableData.bbtype,
-    wFreq: tableData.wfreq
-  }));
+function createDemoTable(metadata, selectedValue) {
+  //selectedValue has been defined as a string, in order to search for the object id, it must be an integer
+  const selectedValueInt = parseInt(selectedValue);  
+  let data = metadata.find(item => item.id === selectedValueInt);
 
-  // Define the columns for the table
-  const columns = Object.keys(tableData[0]);
-
-  // Create a trace for the table
-  const tableTrace = {
-    type: 'table',
-    header: {
-      values: columns,
-      align: 'center',
-      line: { width: 1, color: 'black' },
-      fill: { color: 'lightgrey' },
-      font: { family: 'Arial', size: 12, color: 'black' },
-    },
-    cells: {
-      values: tableData.map(row => Object.values(row)),
-      align: 'center',
-      line: { color: 'black', width: 1 },
-      font: { family: 'Arial', size: 11, color: ['black'] },
-    },
+  // Create an object to hold the table data
+  const tableData = {
+    id: `id: ${data.id}`,
+    ethnicity: `ethnicity: ${data.ethnicity}`,
+    gender: `gender: ${data.gender}`,
+    age: `age: ${data.age}`,
+    location: `location: ${data.location}`,
+    bbtype: `bbtype: ${data.bbtype}`,
+    wfreq: `wfreq: ${data.wfreq}`
   };
+  console.log("Fetched metadata:", metadata);
+  console.log("Selected data:", data);
+  // Get the HTML element by its ID
+  const outputElement = document.getElementById("sample-metadata");
 
-  // Define the layout for the table
-  const layout = {
-    title: `Metadata Table for ID ${selectedValue}`,
-  };
+  // Initialize an empty string to hold the HTML content
+  let htmlContent = "";
 
-  // Create the table
-  Plotly.newPlot('metadata-table', [tableTrace], layout);
+  // Iterate through the properties of tableData and build the HTML content
+  for (const property in tableData) {
+    htmlContent += `<p>${tableData[property]}</p>`;
+  }
+
+  // Set the innerHTML of the outputElement to the generated HTML content
+  outputElement.innerHTML = htmlContent;
 }
 
-
-
-//function createWashPlot(metaData, selectedValue) {
-//const id = metaData.find(id => sample.id === selectedValue);
- // const
-
-
-
+ 
 function optionChanged(selectedValue) {
   // The 'selectedValue' parameter will contain the value of the selected option
   console.log("Selected value:", selectedValue);
@@ -144,6 +123,6 @@ function optionChanged(selectedValue) {
   // Call the barData function with the necessary data and store the result
   createBarChart(rawData.samples, selectedValue);
   createBubbleChart(rawData.samples, selectedValue);
-  createDemoTable(rawData.metaData, selectedValue);
+  createDemoTable(rawData.metadata, selectedValue);
   //createWashPlot(rawdata.metadata, selectedValue);
 }
