@@ -1,33 +1,3 @@
-// Declare rawData as a global variable makes it accessible everywhere, using, "let", instead of  
-//the d3.json(ewwwrl) section allows values to be assigned to it
-let rawData; 
-//initializes selectedValue to equal the first element of the array used in the dropdown
-//using, "let", instead of, "const", allows the value to be changed
-let selectedValue = "940";
-// Get the Roadster endpoint
-const ewwwRl = 'https://2u-data-curriculum-team.s3.amazonaws.com/dataviz-classroom/v1.1/14-Interactive-Web-Visualizations/02-Homework/samples.json';
-
-//this section is used to access the json objects at ewwwrl, it then sets rawData equal to the array of objects,
-//which will be used as a data source for the plot functions further down 
-d3.json(ewwwRl) 
-  .then(data => {
-    rawData = data; // Assign the fetched data to the global rawData variable
-    const names = rawData.names;
-
-    // Used a loop to append the selectElement array which displays values from the, "names",
-    const selectElement = d3.select("#selDataset");
-    names.forEach(value => {
-      selectElement
-        .append("option")
-        .attr("value", value)
-        .text(value);
-    });
-
-    //this calls the chart functions when the page is first loaded
-    createBarChart(rawData.samples, selectedValue);
-    createBubbleChart(rawData.samples, selectedValue);
-    createDemoTable(rawData.metadata, selectedValue);
-  });
 
 function createBarChart(samples, selectedValue) {
   // Find the sample with the matching id
@@ -66,8 +36,8 @@ function createBubbleChart(samples, selectedValue) {
     text: otuLabels,     // Use otu_labels for hover text
     mode: "markers",
     marker: {
-      size: sampleValues, // Set the marker size based on sampleValues
-      color: otuId,       // Set the marker color based on otuId
+      size: sampleValues, // marker size based on sampleValuessampleValues
+      color: otuId,       // marker color based on otuId
       colorscale: "Earth", // You can choose different color scales
       colorbar: {
         title: "OTU ID",  // Label for the color bar
@@ -133,3 +103,34 @@ function optionChanged(selectedValue) {
   createDemoTable(rawData.metadata, selectedValue);
   //createWashPlot(rawdata.metadata, selectedValue);
 }
+
+// Declare rawData as a global variable makes it accessible everywhere, using, "let", instead of  
+//the d3.json(ewwwrl) section allows values to be assigned to it
+let rawData; 
+//initializes selectedValue to equal the first element of the array used in the dropdown
+//using, "let", instead of, "const", allows the value to be changed
+let selectedValue = "940";
+// Get the Roadster endpoint
+const ewwwRl = 'https://2u-data-curriculum-team.s3.amazonaws.com/dataviz-classroom/v1.1/14-Interactive-Web-Visualizations/02-Homework/samples.json';
+
+//this section is used to access the json objects at ewwwrl, it then sets rawData equal to the array of objects,
+//which will be used as a data source for the plot functions further down 
+d3.json(ewwwRl) 
+  .then(data => {
+    rawData = data; // Assign the fetched data to the global rawData variable
+    const names = rawData.names;
+
+    // Used a loop to append the selectElement array which displays values from the, "names",
+    const selectElement = d3.select("#selDataset");
+    names.forEach(value => {
+      selectElement
+        .append("option")
+        .attr("value", value)
+        .text(value);
+    });
+
+    //this calls the chart functions when the page is first loaded
+    createBarChart(rawData.samples, selectedValue);
+    createBubbleChart(rawData.samples, selectedValue);
+    createDemoTable(rawData.metadata, selectedValue);
+  });
