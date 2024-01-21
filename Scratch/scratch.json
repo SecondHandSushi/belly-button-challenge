@@ -1,26 +1,50 @@
-generally speaking I have a central data interface, serving as a depot/broker, then I broke the plots down into separate functions then called 
-those from a seperate function that sets the  the value of the drop down when it changes, 
+function createGauge(metadata, selectedValue) {
+  //selectedValue has been defined as a string, in order to search for the object id, it must be an integer
+  const selectedValueInt = parseInt(selectedValue);  
+  let data = metadata.find(item => item.id === selectedValueInt);
+  
+  // Define the trace for the gauge chart
+  const trace = [{
+    domain: { x: [0, 1], y: [0, 1] },
+    value: data.wfreq,
+    type: "indicator",
+    mode: "gauge+number",
+    gauge: {
+      axis: {
+        range: [0, 9],
+        tickvals: [], // Remove ticks
+        ticktext: [], // Remove tick labels
+        showticklabels: false, // Hide tick labels
+        showtickvals: false, // Hide tick values
+      },
+      bar: {
+        color: {  // Define a color gradient for the gauge
+          gradient: {
+            type: "linear",  // Type of gradient (linear or radial)
+            color: [
+              [0, "red"],     // Start color and position
+              [0.5, "yellow"],// Middle color and position
+              [1, "green"],   // End color and position
+            ],
+          },
+        },
+        thickness: 0, // Set the thickness to 0 to hide it
+      },
+    },
+  }];
 
+  const layout = {
+    width: 600,
+    height: 400,
+    title: {
+      text: "Belly Button Wash Frequency<br><span style='font-size:0.8em;color:gray'>Washes per Week</span><br>"
+    },
+  };
 
+  Plotly.newPlot('gauge', trace, layout);
+}
 
-
-"otu_ids": [1167, 2859, 482]
-"sample_values": [163, 126, 113]
-
-const otuIdTop10 = sampleId.otu_ids.slice(0,10);
-const sampleValuesTop10 = sampleId.sample_values.slice(0,10);
-const otuLabelsTop10 = sampleId.otu_labels.slice(0,10);
-
-sampleId.otu_ids
-sampleId.sample_values
-sampleId.otu_labels
-
-const metaData = rawData.metadata;
-console.log(metaData);
-const names = rawData.names;
-console.log(names);
-const samples = rawData.samples;
-console.log(samples);
+}
 
 
 
