@@ -2,7 +2,8 @@
 function createBarChart(samples, selectedValue) {
   // Find the sample with the matching id
   let sampleId = samples.find(sample => sample.id === selectedValue);
-  // Retrieve otu_ids and sample_values from the found sample
+  // Retrieve otu_ids and sample_values from the found sample, slices them to get the first 10 values
+  //then reverses the order to give us the top 10 samples by abundance
   const otuIdTop10 = sampleId.otu_ids.slice(0, 10).reverse();;
   const sampleValuesTop10 = sampleId.sample_values.slice(0, 10).reverse();;
   const otuLabelsTop10 = sampleId.otu_labels.slice(0, 10);
@@ -14,25 +15,34 @@ function createBarChart(samples, selectedValue) {
     type: "bar",
     orientation: "h",
   };
+  const layout = {
+    title: "Top 10 Bacteria Species",
+    xaxis: { title: "Abundance" }, 
+    yaxis: { title: "Sample Values" }, 
+    showlegend: false, // Hide the legend
+    hovermode: "closest", // Display hover info for closest point
+    margin: {
+      t: 30,
+      b: 40,
+      l: 100,
+    }
+  };
   const data = [trace]
-  Plotly.newPlot("bar", data);
+  Plotly.newPlot("bar", data, layout);
 }
 
 function createBubbleChart(samples, selectedValue) {
   // Find the sample with the matching id
   const sampleId = samples.find(sample => sample.id === selectedValue);
-  const otuId = sampleId.otu_ids;
-  const sampleValues = sampleId.sample_values;
-  const otuLabels = sampleId.otu_labels;
   // Create a trace for the bubble chart
   const trace = {
-    x: otuId,            // Assign otu_ids to the x-axis
-    y: sampleValues,     // Assign sample_values to the y-axis
-    text: otuLabels,     // Use otu_labels for hover text
+    x: sampleId.otu_ids,            // Assign otu_ids to the x-axis
+    y: sampleId.sample_values,     // Assign sample_values to the y-axis
+    text: sampleId.otu_labels,     // Use otu_labels for hover text
     mode: "markers",
     marker: {
-      size: sampleValues, // marker size based on sampleValuessampleValues
-      color: otuId,       // marker color based on otuId
+      size: sampleId.sample_values, // marker size based on sampleValuessampleValues
+      color: sampleId.otu_ids,       // marker color based on otuId
       colorscale: "Earth", // You can choose different color scales
       colorbar: {
         title: "OTU ID",  // Label for the color bar
@@ -42,21 +52,21 @@ function createBubbleChart(samples, selectedValue) {
   const data = [trace];
   // Define the layout for the bubble chart
   const layout = {
-    xaxis: { title: "OTU ID" }, // Label for the x-axis
-    yaxis: { title: "Sample Values" }, // Label for the y-axis
+    xaxis: { title: "OTU ID" }, 
+    yaxis: { title: "Sample Values" },
     showlegend: false, // Hide the legend
     hovermode: "closest", // Display hover info for closest point
   };
   // Create the bubble chart
   Plotly.newPlot("bubble", data, layout);
 }
-
+//this function creates the demographic html table
 function createDemoTable(metadata, selectedValue) {
   //selectedValue has been defined as a string, in order to search for the object id, it must be an integer
   const selectedValueInt = parseInt(selectedValue);  
   let data = metadata.find(item => item.id === selectedValueInt);
   // Create an object to hold the table data
-  const trace = {
+  const table = {
     id: `id: ${data.id}`,
     ethnicity: `ethnicity: ${data.ethnicity}`,
     gender: `gender: ${data.gender}`,
@@ -70,12 +80,13 @@ function createDemoTable(metadata, selectedValue) {
   // Initialize an empty string to hold the HTML content
   let htmlContent = "";
   // Iterate through the properties of tableData and build the HTML content
-  for (const property in trace) {
-    htmlContent += `<p>${trace[property]}</p>`;
+  for (const property in table) {
+    htmlContent += `<p>${table[property]}</p>`;
     }
   // Set the innerHTML of the outputElement to the generated HTML content
   outputElement.innerHTML = htmlContent;
 }
+//this gauge was attempted, but I threw in the towel
 function createGauge(metadata, selectedValue) {
   //selectedValue has been defined as a string, in order to search for the object id, it must be an integer
   const selectedValueInt = parseInt(selectedValue);  
@@ -94,10 +105,9 @@ function createGauge(metadata, selectedValue) {
   const layout = {
     width: 600,
     height: 400,
-
     title: {
       text:
-        "Belly Button Wash Frequency<br><span style='font-size:0.8em;color:gray'>Washes per Week</span><br>"
+        "Belly Button Wash Frequency<br><span style='font-size:0.8em;color:gray'><span style='font-size:0.8em;color:red'>Attempted, but could not get it to work correctly</span><br>"
     },
   };
   Plotly.newPlot('gauge', trace, layout);
