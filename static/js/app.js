@@ -18,7 +18,7 @@ function createBarChart(samples, selectedValue) {
   const layout = {
     title: "Top 10 Bacteria Species",
     xaxis: { title: "Abundance" }, 
-    yaxis: { title: "Sample Values" }, 
+    yaxis: { title: "Bacteria Sample ID" }, 
     showlegend: false, // Hide the legend
     hovermode: "closest", // Display hover info for closest point
     margin: {
@@ -53,7 +53,7 @@ function createBubbleChart(samples, selectedValue) {
   // Define the layout for the bubble chart
   const layout = {
     xaxis: { title: "OTU ID" }, 
-    yaxis: { title: "Sample Values" },
+    yaxis: { title: "Bacteria Sample ID"},
     showlegend: false, // Hide the legend
     hovermode: "closest", // Display hover info for closest point
   };
@@ -107,7 +107,7 @@ function createGauge(metadata, selectedValue) {
     height: 400,
     title: {
       text:
-        "Belly Button Wash Frequency<br><span style='font-size:0.8em;color:gray'><span style='font-size:0.8em;color:red'>Attempted, but could not get it to work correctly</span><br>"
+        "Belly Button Wash Frequency<br><span style='font-size:0.8em;color:gray'><span style='font-size:0.8em;color:gray'>Washes per week</span><br>"
     },
   };
   Plotly.newPlot('gauge', trace, layout);
@@ -127,7 +127,9 @@ let rawData;
 //initializes selectedValue to equal the first element of the array used in the dropdown
 //using, "let", instead of, "const", allows the value to be changed
 let selectedValue = "940";
-
+//belly button bacteria is gross, so instead of declaring the URL as URL =
+//I used ewwwRl to inject humor in the hearts and minds of anybody that
+//has to read this
 const ewwwRl = 'https://2u-data-curriculum-team.s3.amazonaws.com/dataviz-classroom/v1.1/14-Interactive-Web-Visualizations/02-Homework/samples.json';
 //this section is used to access the json objects at ewwwrl, it then sets rawData equal to the array of objects,
 //which will be used as a data source for the plot functions further down 
